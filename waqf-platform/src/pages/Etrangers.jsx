@@ -97,7 +97,7 @@ function OppCard({ opp, onFund }) {
         <p style={{ fontSize: 13, color: '#6B7280', lineHeight: 1.6, marginBottom: 14, marginTop: 8 }}>{opp.desc}</p>
         <ProgressBar pct={pct} label={`Min: ${opp.minAmount}`} />
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 14 }}>
-          <div style={{ fontSize: 12, color: '#9CA3AF' }}>{pct}% funded</div>
+          <div style={{ fontSize: 12, color: '#9CA3AF' }}><span className="num">{pct}%</span> funded</div>
           <GoldBtn small onClick={() => onFund(opp)}>Apply Now ←</GoldBtn>
         </div>
       </div>
@@ -200,7 +200,7 @@ function Overview({ user, myFunding, setActive, onFund }) {
         <StatCard label="Opportunities"      value={opportunities.length} icon="globe" accent="#3B82F6" />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 24, marginBottom: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24, marginBottom: 24 }}>
         <Card title="My Funding Applications">
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>

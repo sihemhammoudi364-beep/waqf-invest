@@ -68,7 +68,7 @@ function Overview({ waqfProperties, investmentRequests, diasporaRequests, foreig
         <StatCard label="إجمالي الطلبات"   value={investmentRequests.length + diasporaRequests.length + foreignRequests.length} sub="طلب مسجّل" icon="chart" accent="#3B82F6" />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 24, marginBottom: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24, marginBottom: 24 }}>
         <Card title="طلبات الاستثمار الشهرية">
           <div style={{ padding: '12px 20px 20px' }}>
             <BarChart investCount={investmentRequests.filter(r => r.date.includes('يونيو')).length} />
@@ -93,7 +93,7 @@ function Overview({ waqfProperties, investmentRequests, diasporaRequests, foreig
         </Card>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
         <Card title="أحدث الأملاك الوقفية">
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -133,7 +133,7 @@ function PropertyDetailModal({ prop, onClose }) {
         <div style={{ fontSize: 16, fontWeight: 700, color: GREEN, marginBottom: 6 }}>{prop.name}</div>
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
           <span style={{ fontSize: 12, color: '#6B7280' }}>📍 {prop.wilaya}</span>
-          <span style={{ fontSize: 12, color: '#6B7280' }}>📐 {prop.surface}</span>
+          <span style={{ fontSize: 12, color: '#6B7280' }}>📐 <span className="num">{prop.surface}</span></span>
           <span style={{ fontSize: 12, color: '#6B7280' }}>🏷️ {prop.type}</span>
         </div>
       </div>
@@ -141,17 +141,17 @@ function PropertyDetailModal({ prop, onClose }) {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
         <div style={{ background: '#F9FAF8', borderRadius: 10, padding: '12px 14px' }}>
           <div style={{ fontSize: 11, color: '#9CA3AF', marginBottom: 4 }}>هدف التمويل</div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: GREEN }}>{prop.fundingGoal > 0 ? fmt(prop.fundingGoal) : '—'}</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: GREEN }}><span className="num">{prop.fundingGoal > 0 ? fmt(prop.fundingGoal) : '—'}</span></div>
         </div>
         <div style={{ background: '#F9FAF8', borderRadius: 10, padding: '12px 14px' }}>
           <div style={{ fontSize: 11, color: '#9CA3AF', marginBottom: 4 }}>المُجمَّع</div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: GOLD }}>{prop.fundingRaised > 0 ? fmt(prop.fundingRaised) : '—'}</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: GOLD }}><span className="num">{prop.fundingRaised > 0 ? fmt(prop.fundingRaised) : '—'}</span></div>
         </div>
       </div>
       {prop.fundingGoal > 0 && (
         <div style={{ marginBottom: 16 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#6B7280', marginBottom: 6 }}>
-            <span>نسبة التمويل</span><span style={{ fontWeight: 700, color: GREEN }}>{pct}%</span>
+            <span>نسبة التمويل</span><span style={{ fontWeight: 700, color: GREEN }}><span className="num">{pct}%</span></span>
           </div>
           <div style={{ height: 8, background: '#E5E7EB', borderRadius: 99, overflow: 'hidden' }}>
             <div style={{ height: '100%', width: `${pct}%`, background: `linear-gradient(90deg, ${GREEN}, ${GOLD})`, borderRadius: 99, transition: 'width 0.5s ease' }} />

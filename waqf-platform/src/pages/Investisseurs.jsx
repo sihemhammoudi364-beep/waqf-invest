@@ -204,7 +204,7 @@ function OpportunityCard({ opp, onApply }) {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 16 }}>
           <div>
             <div style={{ fontSize: 12, color: '#9CA3AF' }}>تم جمع</div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: GREEN }}>{(opp.raised / 1000000).toFixed(1)} مليون دج</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: GREEN }}><span className="num">{(opp.raised / 1000000).toFixed(1)}</span> مليون دج</div>
           </div>
           <GoldBtn onClick={() => onApply(opp)}>تقديم عرض ←</GoldBtn>
         </div>
@@ -283,7 +283,7 @@ function Overview({ user, myOffers, setActive, onApply }) {
       </div>
 
       <Card title="أبرز الفرص المتاحة" action={() => setActive('opportunities')} actionLabel="عرض الكل ←">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, padding: '20px 20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20, padding: '20px 20px' }}>
           {opportunities.slice(0, 2).map(o => <OpportunityCard key={o.id} opp={o} onApply={onApply} />)}
         </div>
       </Card>

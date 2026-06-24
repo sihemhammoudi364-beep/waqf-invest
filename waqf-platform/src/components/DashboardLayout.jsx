@@ -31,6 +31,7 @@ export const Icon = ({ name, size = 18, color = 'currentColor' }) => {
     eye:       <><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></>,
     book:      <><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></>,
     upload:    <><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></>,
+    menu:      <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>,
   }
   return (
     <svg style={s} viewBox="0 0 24 24" fill="none"
@@ -94,7 +95,7 @@ export function StatCard({ label, value, sub, icon, accent = GOLD }) {
         </div>
       )}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 32, fontWeight: 700, color: accent, lineHeight: 1, marginBottom: 4, fontFamily: 'Amiri, serif' }}>{value}</div>
+        <div style={{ fontSize: 32, fontWeight: 700, color: accent, lineHeight: 1, marginBottom: 4, fontFamily: 'Amiri, serif' }}><span className="num">{value}</span></div>
         <div style={{ fontSize: 14, fontWeight: 500, color: GREEN }}>{label}</div>
         {sub && <div style={{ fontSize: 12, color: '#6B7280', marginTop: 3 }}>{sub}</div>}
       </div>
@@ -201,7 +202,7 @@ export function ProgressBar({ pct, label }) {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#6B7280', marginBottom: 5 }}>
         <span>{label || 'التمويل'}</span>
-        <span style={{ fontWeight: 700, color: GREEN }}>{pct}%</span>
+        <span style={{ fontWeight: 700, color: GREEN }}><span className="num">{pct}%</span></span>
       </div>
       <div style={{ height: 7, background: '#E8F0EB', borderRadius: 99, overflow: 'hidden' }}>
         <div style={{ height: '100%', width: `${pct}%`, background: GREEN, borderRadius: 99, transition: 'width 1s ease' }} />
@@ -337,6 +338,8 @@ export default function DashboardLayout({ navSections, user, active, onNavigate,
   const navigate = useNavigate()
   const [collapsed, setCollapsed] = useState(false)
   const [bellOpen, setBellOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
+  const [mobileOpen, setMobileOpen] = useState(false)
   const bellRef = useRef(null)
   const W = collapsed ? 68 : 248
   const isRTL = dir === 'rtl'
@@ -347,35 +350,67 @@ export default function DashboardLayout({ navSections, user, active, onNavigate,
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
-  return (
-    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#FAFAF7', direction: dir }}>
+  useEffect(() => {
+    const handler = () => {
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
+      if (!mobile) setMobileOpen(false)
+    }
+    window.addEventListener('resize', handler)
+    return () => window.removeEventListener('resize', handler)
+  }, [])
 
-      {/* ── Sidebar ── */}
-      <aside style={{
-        width: W, flexShrink: 0,
-        background: GREEN,
+  const sidebarStyle = isMobile
+    ? {
+        width: 248, flexShrink: 0, background: GREEN,
+        display: 'flex', flexDirection: 'column',
+        position: 'fixed', top: 0, bottom: 0,
+        ...(isRTL ? { right: 0 } : { left: 0 }),
+        transition: 'transform 0.28s cubic-bezier(0.4, 0, 0.2, 1)',
+        zIndex: 50,
+        transform: isRTL
+          ? `translateX(${mobileOpen ? '0' : '100%'})`
+          : `translateX(${mobileOpen ? '0' : '-100%'})`,
+        boxShadow: '0 0 40px rgba(0,0,0,0.3)',
+      }
+    : {
+        width: W, flexShrink: 0, background: GREEN,
         display: 'flex', flexDirection: 'column',
         position: 'fixed', top: 0, bottom: 0,
         ...(isRTL ? { right: 0 } : { left: 0 }),
         transition: 'width 0.25s ease',
         zIndex: 40,
         boxShadow: isRTL ? '2px 0 20px rgba(0,0,0,0.15)' : '-2px 0 20px rgba(0,0,0,0.15)',
-      }}>
+      }
+
+  return (
+    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#FAFAF7', direction: dir }}>
+
+      {/* Mobile overlay backdrop */}
+      {isMobile && mobileOpen && (
+        <div
+          className="sidebar-mobile-overlay"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      {/* ── Sidebar ── */}
+      <aside style={sidebarStyle}>
         {/* Logo row */}
         <div style={{
           display: 'flex', alignItems: 'center', gap: 10,
-          padding: collapsed ? '18px 14px' : '18px 16px',
+          padding: (collapsed && !isMobile) ? '18px 14px' : '18px 16px',
           borderBottom: '1px solid rgba(255,255,255,0.1)',
           flexShrink: 0,
         }}>
           <img src="/logo.png" alt="" style={{ width: 32, height: 32, objectFit: 'contain', flexShrink: 0 }} />
-          {!collapsed && (
+          {(!collapsed || isMobile) && (
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ color: '#fff', fontWeight: 700, fontSize: 13, lineHeight: 1.3, whiteSpace: 'nowrap' }}>منصة الأوقاف</div>
               <div style={{ color: GOLD, fontSize: 11, marginTop: 1 }}>نمو واستدامة</div>
             </div>
           )}
-          <button onClick={() => setCollapsed(!collapsed)}
+          <button onClick={() => isMobile ? setMobileOpen(false) : setCollapsed(!collapsed)}
             style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.4)', padding: 4, display: 'flex', ...(isRTL ? { marginRight: collapsed ? 'auto' : 0 } : { marginLeft: collapsed ? 'auto' : 0 }) }}
             onMouseEnter={e => e.currentTarget.style.color = '#fff'}
             onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.4)'}
@@ -388,7 +423,7 @@ export default function DashboardLayout({ navSections, user, active, onNavigate,
         <nav style={{ flex: 1, overflowY: 'auto', padding: '12px 8px' }}>
           {navSections.map(section => (
             <div key={section.label} style={{ marginBottom: 20 }}>
-              {!collapsed && (
+              {(!collapsed || isMobile) && (
                 <p style={{
                   color: 'rgba(255,255,255,0.3)', fontSize: 10, fontWeight: 700,
                   textTransform: 'uppercase', letterSpacing: '0.12em',
@@ -400,11 +435,11 @@ export default function DashboardLayout({ navSections, user, active, onNavigate,
               {section.items.map(item => {
                 const isActive = active === item.id
                 return (
-                  <button key={item.id} onClick={() => onNavigate(item.id)}
-                    title={collapsed ? item.label : undefined}
+                  <button key={item.id} onClick={() => { onNavigate(item.id); if (isMobile) setMobileOpen(false) }}
+                    title={(collapsed && !isMobile) ? item.label : undefined}
                     style={{
                       width: '100%', display: 'flex', alignItems: 'center',
-                      gap: 10, padding: collapsed ? '9px 14px' : '9px 12px',
+                      gap: 10, padding: (collapsed && !isMobile) ? '9px 14px' : '9px 12px',
                       borderRadius: 9, marginBottom: 2, cursor: 'pointer', border: 'none',
                       background: isActive ? `${GOLD}22` : 'transparent',
                       borderRight: isActive ? `3px solid ${GOLD}` : '3px solid transparent',
@@ -415,7 +450,7 @@ export default function DashboardLayout({ navSections, user, active, onNavigate,
                     onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'rgba(255,255,255,0.55)' } }}
                   >
                     <Icon name={item.icon} size={17} color="currentColor" />
-                    {!collapsed && (
+                    {(!collapsed || isMobile) && (
                       <>
                         <span style={{ flex: 1, fontSize: 13, fontWeight: isActive ? 600 : 400, textAlign: isRTL ? 'right' : 'left' }}>{item.label}</span>
                         {item.badge > 0 && (
@@ -436,10 +471,10 @@ export default function DashboardLayout({ navSections, user, active, onNavigate,
 
         {/* Footer */}
         <div style={{ flexShrink: 0, padding: '8px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-          <button onClick={() => navigate('/')}
+          <button onClick={() => { navigate('/'); if (isMobile) setMobileOpen(false) }}
             style={{
               width: '100%', display: 'flex', alignItems: 'center', gap: 10,
-              padding: collapsed ? '9px 14px' : '9px 12px',
+              padding: (collapsed && !isMobile) ? '9px 14px' : '9px 12px',
               borderRadius: 9, cursor: 'pointer', border: 'none',
               background: 'transparent', color: 'rgba(255,255,255,0.4)',
               transition: 'all 0.15s ease', marginBottom: 6,
@@ -448,9 +483,9 @@ export default function DashboardLayout({ navSections, user, active, onNavigate,
             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'rgba(255,255,255,0.4)' }}
           >
             <Icon name="home" size={17} color="currentColor" />
-            {!collapsed && <span style={{ fontSize: 13 }}>الصفحة الرئيسية</span>}
+            {(!collapsed || isMobile) && <span style={{ fontSize: 13 }}>الصفحة الرئيسية</span>}
           </button>
-          {!collapsed && (
+          {(!collapsed || isMobile) && (
             <div style={{
               display: 'flex', alignItems: 'center', gap: 10,
               padding: '9px 12px', borderRadius: 9, background: 'rgba(255,255,255,0.06)',
@@ -471,30 +506,54 @@ export default function DashboardLayout({ navSections, user, active, onNavigate,
       </aside>
 
       {/* ── Main ── */}
-      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', ...(isRTL ? { marginRight: W, transition: 'margin-right 0.25s ease' } : { marginLeft: W, transition: 'margin-left 0.25s ease' }) }}>
+      <main style={{
+        flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden',
+        ...(isMobile
+          ? {}
+          : isRTL
+            ? { marginRight: W, transition: 'margin-right 0.25s ease' }
+            : { marginLeft: W, transition: 'margin-left 0.25s ease' }),
+      }}>
 
         {/* Topbar */}
         <header style={{
           background: '#fff', borderBottom: '1px solid #EAEDE8', flexShrink: 0,
           boxShadow: '0 1px 8px rgba(0,0,0,0.04)',
-          display: 'flex', alignItems: 'center', gap: 16, padding: '0 28px', height: 60,
+          display: 'flex', alignItems: 'center', gap: isMobile ? 10 : 16,
+          padding: isMobile ? '0 14px' : '0 28px', height: 60,
         }}>
-          <div style={{ flex: 1 }}>
-            <h1 style={{ fontSize: 18, fontWeight: 700, color: GREEN, margin: 0 }}>{title}</h1>
-            {subtitle && <p style={{ fontSize: 12, color: '#6B7280', marginTop: 2, margin: 0 }}>{subtitle}</p>}
+          {/* Mobile hamburger */}
+          {isMobile && (
+            <button
+              onClick={() => setMobileOpen(o => !o)}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                width: 36, height: 36, borderRadius: 8, flexShrink: 0,
+                color: GREEN,
+              }}
+            >
+              <Icon name={mobileOpen ? 'x' : 'menu'} size={20} color={GREEN} />
+            </button>
+          )}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <h1 style={{ fontSize: isMobile ? 15 : 18, fontWeight: 700, color: GREEN, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{title}</h1>
+            {subtitle && !isMobile && <p style={{ fontSize: 12, color: '#6B7280', marginTop: 2, margin: 0 }}>{subtitle}</p>}
           </div>
-          {/* Search */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 8,
-            background: '#FAFAF7', border: '1.5px solid #DDDFD9',
-            borderRadius: 9, padding: '7px 12px', width: 220,
-          }}>
-            <Icon name="search" size={15} color="#9CA3AF" />
-            <input placeholder={isRTL ? 'بحث...' : 'Search...'} dir={dir} style={{
-              background: 'transparent', border: 'none', outline: 'none',
-              fontSize: 13, color: GREEN, flex: 1, textAlign: isRTL ? 'right' : 'left',
-            }} />
-          </div>
+          {/* Search — hidden on mobile */}
+          {!isMobile && (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 8,
+              background: '#FAFAF7', border: '1.5px solid #DDDFD9',
+              borderRadius: 9, padding: '7px 12px', width: 220,
+            }}>
+              <Icon name="search" size={15} color="#9CA3AF" />
+              <input placeholder={isRTL ? 'بحث...' : 'Search...'} dir={dir} style={{
+                background: 'transparent', border: 'none', outline: 'none',
+                fontSize: 13, color: GREEN, flex: 1, textAlign: isRTL ? 'right' : 'left',
+              }} />
+            </div>
+          )}
           {/* Bell */}
           <div ref={bellRef} style={{ position: 'relative' }}>
             <button
@@ -521,13 +580,21 @@ export default function DashboardLayout({ navSections, user, active, onNavigate,
             </button>
 
             {bellOpen && (
-              <div style={{
-                position: 'absolute', top: 'calc(100% + 8px)',
-                ...(isRTL ? { left: 0 } : { right: 0 }),
-                width: 320, background: '#fff', borderRadius: 12,
-                boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
-                border: '1px solid #EAEDE8', zIndex: 200, overflow: 'hidden',
-              }}>
+              <div style={isMobile
+                ? {
+                    position: 'fixed', top: 68, left: 8, right: 8,
+                    background: '#fff', borderRadius: 12,
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+                    border: '1px solid #EAEDE8', zIndex: 200, overflow: 'hidden',
+                  }
+                : {
+                    position: 'absolute', top: 'calc(100% + 8px)',
+                    ...(isRTL ? { left: 0 } : { right: 0 }),
+                    width: 320, background: '#fff', borderRadius: 12,
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+                    border: '1px solid #EAEDE8', zIndex: 200, overflow: 'hidden',
+                  }
+              }>
                 <div style={{ padding: '14px 16px', borderBottom: '1px solid #F3F4F2', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: 14, fontWeight: 600, color: GREEN }}>الإشعارات</span>
                   {notifications.filter(n => !n.read).length > 0 && (
@@ -566,7 +633,7 @@ export default function DashboardLayout({ navSections, user, active, onNavigate,
         </header>
 
         {/* Content */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: 28 }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: isMobile ? 14 : 28 }}>
           {children}
         </div>
       </main>

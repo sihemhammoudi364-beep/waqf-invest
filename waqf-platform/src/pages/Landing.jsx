@@ -45,7 +45,7 @@ function Counter({ target, suffix = '', isFloat = false }) {
     if (ref.current) obs.observe(ref.current)
     return () => obs.disconnect()
   }, [target, isFloat])
-  return <span ref={ref}>{val}{suffix}</span>
+  return <span ref={ref} className="num">{val}{suffix}</span>
 }
 
 // ── FAQ item ──────────────────────────────────────────────────────────────────
@@ -134,14 +134,14 @@ function ProjectCard({ p }) {
         <div>
           <div className="flex justify-between text-xs mb-1.5">
             <span style={{ color: `${GREEN}70` }}>التمويل المُجمَّع</span>
-            <span className="font-bold" style={{ color: GREEN }}>{pct}%</span>
+            <span className="font-bold" style={{ color: GREEN }}><span className="num">{pct}%</span></span>
           </div>
           <div className="prog-track">
             <div className="prog-fill" style={{ width: `${pct}%` }} />
           </div>
           <div className="flex justify-between text-xs mt-1.5" style={{ color: `${GREEN}55` }}>
-            <span>{(p.fundingRaised / 1e6).toFixed(1)} م دج جُمع</span>
-            <span>{donors} مشترك</span>
+            <span><span className="num">{(p.fundingRaised / 1e6).toFixed(1)}</span> م دج جُمع</span>
+            <span><span className="num">{donors}</span> مشترك</span>
           </div>
         </div>
 
@@ -712,7 +712,7 @@ export default function Landing() {
                     padding: '24px 16px',
                   }}
                 >
-                  <div style={{ fontSize: 28, fontWeight: 700, color: GOLD, fontFamily: 'Amiri, serif' }}>{c.val}</div>
+                  <div style={{ fontSize: 28, fontWeight: 700, color: GOLD, fontFamily: 'Amiri, serif' }}><span className="num">{c.val}</span></div>
                   <div style={{ color: '#fff', fontWeight: 600, fontSize: 14, marginTop: 4 }}>{c.label}</div>
                   <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, marginTop: 2 }}>{c.sub}</div>
                 </div>

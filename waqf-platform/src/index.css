@@ -11,10 +11,17 @@
   --text:    #1B4332;
   --muted:   #6B7280;
   --radius:  12px;
+  color-scheme: only light;
 }
 
 /* ── Base ── */
 * { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  background-color: #FAFAF7;
+  color: #1B4332;
+}
 
 body {
   font-family: 'Tajawal', sans-serif;
@@ -26,7 +33,23 @@ body {
   color: var(--text);
 }
 
-html { scroll-behavior: smooth; }
+/* ── Number direction fix (RTL reversal prevention) ── */
+.num {
+  direction: ltr;
+  display: inline-block;
+  unicode-bidi: isolate;
+}
+
+/* ── Mobile dashboard sidebar overlay ── */
+@media (max-width: 767px) {
+  .sidebar-mobile-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 45;
+    backdrop-filter: blur(2px);
+  }
+}
 
 /* ── Typography scale ── */
 .font-heading { font-family: 'Amiri', serif; }

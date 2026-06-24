@@ -72,7 +72,7 @@ function ProjectCard({ proj, onFund }) {
         <p style={{ fontSize: 13, color: '#6B7280', lineHeight: 1.6, marginBottom: 14 }}>{proj.desc}</p>
         <ProgressBar pct={pct} label="التمويل" />
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 14 }}>
-          <div style={{ fontSize: 13, color: '#6B7280' }}>{pct}% من الهدف</div>
+          <div style={{ fontSize: 13, color: '#6B7280' }}><span className="num">{pct}%</span> من الهدف</div>
           <GoldBtn small onClick={() => onFund(proj)}>تمويل هذا المشروع</GoldBtn>
         </div>
       </div>
@@ -99,7 +99,7 @@ function Overview({ user, contributions, setActive, onFund }) {
         <StatCard label="المشاريع الممولة"  value="3" icon="globe" accent="#3B82F6" />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 24, marginBottom: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24, marginBottom: 24 }}>
         <Card title="مساهماتي الأخيرة">
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
