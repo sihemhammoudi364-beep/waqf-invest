@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design tokens ── */
+:root {
+  --gold:    #D4A017;
+  --green:   #1B4332;
+  --green-d: #0F2D1F;
+  --bg:      #FAFAF7;
+  --text:    #1B4332;
+  --muted:   #6B7280;
+  --radius:  12px;
+}
+
+/* ── Base ── */
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  direction: rtl;
+  background-color: var(--bg);
+  overflow-x: hidden;
+  color: var(--text);
+}
+
+html { scroll-behavior: smooth; }
+
+/* ── Typography scale ── */
+.font-heading { font-family: 'Amiri', serif; }
+
+h1 { font-size: clamp(2.75rem, 5vw, 3.5rem); font-weight: 700; line-height: 1.15; }
+h2 { font-size: clamp(1.8rem, 3vw, 2.25rem); font-weight: 600; line-height: 1.25; }
+h3 { font-size: clamp(1.1rem, 2vw, 1.35rem); font-weight: 500; line-height: 1.4; }
+
+.section-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+}
+
+/* ── Scroll reveal ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.reveal.in-view { opacity: 1; transform: translateY(0); }
+.reveal-d1 { transition-delay: 0.08s; }
+.reveal-d2 { transition-delay: 0.16s; }
+.reveal-d3 { transition-delay: 0.24s; }
+.reveal-d4 { transition-delay: 0.32s; }
+.reveal-d5 { transition-delay: 0.40s; }
+
+/* ── Glassmorphism ── */
+.glass {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,255,255,0.22);
+}
+
+/* ── Cards ── */
+.premium-card {
+  background: #fff;
+  border: 1px solid rgba(212,160,23,0.18);
+  border-radius: var(--radius);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+.premium-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(27,67,50,0.12);
+  border-color: rgba(212,160,23,0.45);
+}
+
+/* ── Progress bar ── */
+.prog-track {
+  height: 8px;
+  background: #E8F0EB;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.prog-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 99px;
+  transition: width 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── FAQ ── */
+.faq-item {
+  background: #fff;
+  border-radius: var(--radius);
+  border: 1px solid #E9EFEA;
+  border-right: 3px solid var(--gold);
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  transition: box-shadow 0.2s ease;
+}
+.faq-item:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+.faq-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+  text-align: right;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.faq-btn.open { background: #F0F7F4; }
+.faq-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.faq-body.open { max-height: 260px; }
+
+/* ── Gold accent ── */
+.gold-text { color: var(--gold); }
+.gold-bg   { background: var(--gold); }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: var(--green); border-radius: 3px; }
+
+/* ── Hero entrance animations ── */
+@keyframes heroUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-anim {
+  opacity: 0;
+  animation: heroUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.ha-d1 { animation-delay: 0.15s; }
+.ha-d2 { animation-delay: 0.38s; }
+.ha-d3 { animation-delay: 0.58s; }
+.ha-d4 { animation-delay: 0.75s; }
+.ha-d5 { animation-delay: 0.92s; }
+
+/* ── Interactive transitions ── */
+button, a { transition: all 0.2s ease; }
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+}
+
+/* ── Toast ── */
+@keyframes toastSlideUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(16px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
